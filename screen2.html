@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gambar Terakhir ESP32-CAM</title>
+
+    <!-- Firebase SDK v8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .container {
+        background: rgba(30, 58, 138, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 40px;
+        border-radius: 25px;
+        width: 100%;
+        max-width: 700px;
+        text-align: center;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+      }
+
+      h1 {
+        margin-bottom: 10px;
+        color: #f1f5f9;
+      }
+
+      img {
+        width: 100%;
+        border-radius: 16px;
+        margin-top: 20px;
+      }
+
+      .btn-back {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 12px 20px;
+        background: #2563eb;
+        color: white;
+        text-decoration: none;
+        border-radius: 12px;
+      }
+
+      .btn-back:hover {
+        background: #1d4ed8;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Gambar Terakhir ESP32-CAM</h1>
+      <p id="timestamp">Memuat gambar...</p>
+      <img id="gambar" src="" alt="Gambar Terakhir" />
+      <a href="index.html" class="btn-back">Kembali</a>
+    </div>
+
+    <script>
+      var firebaseConfig = {
+        apiKey: "AIzaSyC9SXaP7WD0pFP9z0NWPQvd5H_1YhW0LSg",
+        authDomain: "esp32camskripsi.firebaseapp.com",
+        databaseURL:
+          "https://esp32camskripsi-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "esp32camskripsi",
+        storageBucket: "esp32camskripsi.appspot.com",
+        messagingSenderId: "860517230904",
+        appId: "1:860517230904:web:76c0d8e696a6b608a579cd",
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      var database = firebase.database();
+
+      // 🔥 FIX TOTAL DISINI
+      database.ref("esp32cam").on("value", function (snapshot) {
+        var data = snapshot.val();
+        console.log("DATA:", data);
+
+        if (!data) {
+          document.getElementById("timestamp").innerHTML = "Data kosong!";
+          return;
+        }
+
+        var imageBase64 = null;
+
+        // ✅ kemungkinan 1: string langsung
+        if (typeof data === "string") {
+          imageBase64 = data;
+        }
+
+        // ✅ kemungkinan 2: object
+        else if (data.image) {
+          imageBase64 = data.image;
+        }
+
+        // ✅ kemungkinan 3: push (random key)
+        else {
+          var keys = Object.keys(data);
+          var lastKey = keys[keys.length - 1];
+          if (data[lastKey] && data[lastKey].image) {
+            imageBase64 = data[lastKey].image;
+          }
+        }
+
+        if (imageBase64) {
+          document.getElementById("gambar").src =
+            "data:image/jpeg;base64," + imageBase64;
+
+          document.getElementById("timestamp").innerHTML =
+            "Waktu tampil: " + new Date().toLocaleString("id-ID");
+        } else {
+          document.getElementById("timestamp").innerHTML =
+            "Gambar tidak ditemukan!";
+        }
+      });
+    </script>
+  </body>
+</html>

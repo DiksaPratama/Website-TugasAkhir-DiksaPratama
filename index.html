@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistem Keamanan Panel IoT</title>
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+      body {
+        min-height: 100vh;
+        display: flex;
+        color: white;
+        overflow-x: hidden;
+        overflow-y: auto;
+        background: linear-gradient(-45deg, #0f172a, #1e3a8a, #0f172a, #1e40af);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
+      }
+      @keyframes gradientBG {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      } /* Sidebar */
+      .sidebar {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: rgba(15, 23, 42, 0.98);
+        overflow-x: hidden;
+        transition: 0.4s;
+        padding-top: 100px;
+        z-index: 1000;
+      }
+      .sidebar a {
+        display: block;
+        padding: 15px 30px;
+        text-decoration: none;
+        color: #cbd5e1;
+        font-size: 18px;
+        transition: 0.3s;
+        font-family: "Poppins", sans-serif;
+      }
+      .sidebar a:hover {
+        background: #1e40af;
+        color: white;
+      }
+      .sidebar .closebtn {
+        position: absolute;
+        top: 20px;
+        right: 25px;
+        font-size: 30px;
+        cursor: pointer;
+      }
+      .main {
+        flex: 1;
+        width: 100%;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+      }
+      .top-area {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .menu-icon {
+        font-size: 28px;
+        cursor: pointer;
+      }
+      .logo-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+      }
+      .logo-section {
+        display: flex;
+        gap: 25px;
+      } /* LOGO TANPA BACKGROUND PUTIH */
+      .logo-box {
+        width: 90px;
+        height: 90px;
+        background: transparent;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .logo-box img {
+        width: 85%;
+        height: auto;
+        object-fit: contain;
+        display: block;
+      }
+      .welcome-text {
+        margin-top: 15px;
+        text-align: right;
+        font-size: 18px;
+        font-family: "Poppins", sans-serif;
+      }
+      .center-wrapper {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .dashboard-card {
+        background: rgba(30, 58, 138, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 70px;
+        border-radius: 25px;
+        text-align: center;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+        animation: fadeSlide 1.2s ease;
+        max-width: 850px;
+      }
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .welcome-title {
+        font-size: 55px;
+        font-family: "Brush Script MT", cursive;
+        margin-bottom: 25px;
+        color: #ffffff;
+        text-shadow:
+          0 0 10px #60a5fa,
+          0 0 20px #3b82f6,
+          0 0 40px #1e40af;
+        animation: glow 2s ease-in-out infinite alternate;
+      }
+      @keyframes glow {
+        from {
+          text-shadow: 0 0 10px #60a5fa;
+        }
+        to {
+          text-shadow: 0 0 25px #93c5fd;
+        }
+      }
+      .subtitle {
+        font-size: 24px;
+        margin-bottom: 22px;
+        font-family: "Playfair Display", serif;
+        font-weight: 600;
+        letter-spacing: 1px;
+        color: #f1f5f9;
+      }
+      .description {
+        font-size: 18px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 300;
+        letter-spacing: 0.5px;  
+        color: #dbeafe;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div id="mySidebar" class="sidebar">
+      <span class="closebtn" onclick="closeNav()">&times;</span>
+      <a href="screen2.html">📷 Lihat Gambar Terakhir</a>
+      <a href="screen3.html">🗂 Lihat Riwayat Gambar</a>
+    </div>
+    <div class="main">
+      <div class="top-area">
+        <div class="menu-icon" onclick="openNav()">☰</div>
+        <div class="logo-wrapper">
+          <div class="logo-section">
+            <div class="logo-box"><img src="PNB.png" alt="Logo PNB" /></div>
+            <div class="logo-box"><img src="TE.png" alt="Logo Jurusan" /></div>
+          </div>
+          <div class="welcome-text"><span id="datetime"></span></div>
+        </div>
+      </div>
+      <div class="center-wrapper">
+        <div class="dashboard-card">
+          <div class="welcome-title">Selamat Datang</div>
+          <div class="subtitle">
+            Di Website Sistem Keamanan Box Panel Listrik Berbasis IoT
+          </div>
+          <div class="description">
+            Silakan pilih menu di pojok kiri atas untuk mengetahui riwayat atau
+            data terbaru panel listrik.
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      function openNav() {
+        document.getElementById("mySidebar").style.width = "50%";
+      }
+      function closeNav() {
+        document.getElementById("mySidebar").style.width = "0";
+      }
+      function updateDateTime() {
+        const now = new Date();
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+        const tanggal = now.toLocaleDateString("id-ID", options);
+        const jam = now.toLocaleTimeString("id-ID");
+        document.getElementById("datetime").innerHTML = tanggal + " | " + jam;
+      }
+      setInterval(updateDateTime, 1000);
+      updateDateTime();
+    </script>
+  </body>
+</html>

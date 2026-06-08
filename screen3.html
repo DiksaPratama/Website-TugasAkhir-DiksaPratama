@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Riwayat Gambar Panel</title>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+      body {
+        min-height: 100vh;
+        background: linear-gradient(-45deg, #0f172a, #1e3a8a, #0f172a, #1e40af);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
+        color: white;
+        padding: 40px;
+      }
+      @keyframes gradientBG {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      .container {
+        max-width: 1000px;
+        margin: auto;
+        background: rgba(30, 58, 138, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 25px;
+        padding: 50px;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 40px;
+        color: #f1f5f9;
+      }
+      .riwayat-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 25px;
+      }
+      .card-item {
+        background: rgba(15, 23, 42, 0.7);
+        border-radius: 20px;
+        padding: 15px;
+        text-align: center;
+        transition: 0.3s;
+      }
+      .card-item:hover {
+        transform: translateY(-5px);
+      }
+      .card-item img {
+        width: 100%;
+        border-radius: 15px;
+        margin-bottom: 10px;
+      }
+      .timestamp {
+        font-size: 14px;
+        color: #cbd5e1;
+      }
+      .btn-back {
+        display: inline-block;
+        margin-top: 40px;
+        padding: 12px 25px;
+        background: #2563eb;
+        color: white;
+        text-decoration: none;
+        border-radius: 12px;
+      }
+      .btn-back:hover {
+        background: #1d4ed8;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Riwayat Gambar Sistem Keamanan</h1>
+      <div class="riwayat-list" id="riwayatList"></div>
+      <a href="index.html" class="btn-back">Kembali ke Dashboard</a>
+    </div>
+
+    <script>
+      // 🔹 Konfigurasi Firebase
+      var firebaseConfig = {
+        apiKey: "AIzaSyC9SXaP7WD0pFP9z0NWPQvd5H_1YhW0LSg",
+        authDomain: "esp32camskripsi.firebaseapp.com",
+        databaseURL:
+          "https://esp32camskripsi-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "esp32camskripsi",
+        storageBucket: "esp32camskripsi.appspot.com",
+        messagingSenderId: "860517230904",
+        appId: "1:860517230904:web:76c0d8e696a6b608a579cd",
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      var database = firebase.database();
+
+      // Ambil semua data dari node "riwayatGambar"
+      database.ref("riwayatGambar").on("value", function (snapshot) {
+        var list = document.getElementById("riwayatList");
+        list.innerHTML = "";
+
+        if (!snapshot.exists()) {
+          list.innerHTML = "<p>Tidak ada data gambar</p>";
+          return;
+        }
+
+        var dataArray = [];
+        snapshot.forEach(function (childSnapshot) {
+          dataArray.push(childSnapshot.val());
+        });
+
+        // urutkan terbaru di atas berdasarkan timestamp
+        dataArray.sort(function (a, b) {
+          return parseInt(b.timestamp) - parseInt(a.timestamp);
+        });
+
+        // tampilkan tiap gambar
+        dataArray.forEach(function (data) {
+          if (!data.image && !data.url) return; // skip jika tidak ada gambar
+
+          var imageSrc = data.image
+            ? "data:image/jpeg;base64," + data.image
+            : data.url;
+
+          var card = document.createElement("div");
+          card.className = "card-item";
+
+          card.innerHTML = `
+            <img src="${imageSrc}" alt="Riwayat Gambar">
+            <div class="timestamp">
+              ${data.timestamp ? new Date(parseInt(data.timestamp)).toLocaleString("id-ID") : new Date().toLocaleString("id-ID")}
+            </div>
+          `;
+
+          list.appendChild(card);
+        });
+      });
+    </script>
+  </body>
+</html>
